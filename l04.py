@@ -4,7 +4,7 @@ import numpy as np
 import warnings
 warnings.filterwarnings("ignore")
 
-# лин. модель регрессии
+# лин. модель регрессии -вычисляем w и b
 mglearn.plots.plot_linear_regression_wave()
 plt.show()
 
@@ -16,8 +16,8 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=42)
 
 lr = LinearRegression().fit(X_train, y_train)
 
-print("lr.coef_: {}".format(lr.coef_))
-print("lr.intercept_: {}".format(lr.intercept_))
+print("lr.coef_: {}".format(lr.coef_))#параметр w - массив
+print("lr.intercept_: {}".format(lr.intercept_))#параметр b -число с плавающей точкой
 
 print("\nПравильность на обучающем наборе: {:.2f}".format(lr.score(X_train, y_train)))
 print("Правильность на тестовом наборе: {:.2f}".format(lr.score(X_test, y_test)))
@@ -30,10 +30,11 @@ print("\nПравильность на обучающем наборе: {:.2f}".
 print("Правильность на тестовом наборе: {:.2f}".format(lr.score(X_test, y_test)))
 
 # гребневая регрессия
+from sklearn.linear_model import Ridge
 ridge = Ridge().fit(X_train, y_train)
 print("\nПравильность на обучающем наборе: {:.2f}".format(ridge.score(X_train, y_train)))
 print("Правильность на тестовом наборе: {:.2f}".format(ridge.score(X_test, y_test)))
-
+#компромис между простотой и качеством
 ridge10 = Ridge(alpha=10).fit(X_train, y_train)
 print("\nПравильность на обучающем наборе: {:.2f}".format(ridge10.score(X_train, y_train)))
 print("Правильность на тестовом наборе: {:.2f}".format(ridge10.score(X_test, y_test)))
@@ -54,6 +55,7 @@ plt.ylim(-25, 25)
 plt.legend()
 plt.show()
 
+#кривые обучения
 mglearn.plots.plot_ridge_n_samples()
 plt.show()
 

@@ -70,11 +70,13 @@ cancer = load_breast_cancer()
 X_train, X_test, y_train, y_test = train_test_split(cancer.data, cancer.target, stratify=cancer.target, random_state=66)
 training_accuracy = []
 test_accuracy = []
-neighbors_settings = range(1, 11)#разное кол соседей
+#разное кол соседей
+neighbors_settings = range(1, 11)
 
 for n_neighbors in neighbors_settings:
     clf = KNeighborsClassifier(n_neighbors=n_neighbors)
     clf.fit(X_train, y_train)
+    #записываем правильность
     training_accuracy.append(clf.score(X_train, y_train))
     test_accuracy.append(clf.score(X_test, y_test))
 
@@ -96,7 +98,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=0)
 reg = KNeighborsRegressor(n_neighbors=3)
 reg.fit(X_train, y_train)
 print("Прогнозы для тестового набора:\n{}".format(reg.predict(X_test)))
-#коэффициент детерминации,  является  показателемкачества  регрессионной  модели  и  принимает значения от 0 до 1.
+#коэффициент детерминации,  является  показателем качества  регрессионной  модели  и  принимает значения от 0 до 1.
 print("R^2 на тестовом наборе: {:.2f}".format(reg.score(X_test, y_test)))
 
 fig, axes = plt.subplots(1, 3, figsize=(15, 4))

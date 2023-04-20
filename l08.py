@@ -78,7 +78,7 @@ from IPython.display import display
 display(tree)
 
 import pandas as pd
-ram_prices = pd.read_csv("D:/Subject/АД/Lab/Lab7/ram_price.csv")
+ram_prices = pd.read_csv("../ram_price.csv")
 plt.semilogy(ram_prices.date, ram_prices.price)
 plt.xlabel("Год")
 plt.ylabel("Цена$/Мбайт")

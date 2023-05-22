@@ -5,25 +5,37 @@ import warnings
 warnings.filterwarnings("ignore")
 from sklearn.model_selection import train_test_split
 
+#  это метод, который помогает нам понять и визуализировать основные
+#  закономерности в данных, уменьшая размерность набора признаков.
+# ------------
+# В основе PCA лежит математическое преобразование данных, которое
+# ищет направления в пространстве признаков, где разброс данных
+# максимален. Эти направления называются главными компонентами.
+# Когда мы применяем PCA к данным, он вращает их таким образом,
+# чтобы главные компоненты стали новыми осями координат.
+# идея заключается в том, чтобы преобразовать данные так, чтобы
+# новые признаки (главные компоненты) были некоррелированы между собой.
+# Таким образом, первая главная компонента содержит максимально
+# возможную информацию из исходных данных, вторая - максимально
+# возможную информацию, которая не коррелирует с первой, и так далее.
+
 mglearn.plots.plot_pca_illustration()
 plt.show()
 
+# Одним из  наиболее  распространенных применений PCA является
+# визуализация высокоразмерных наборов данных
 from sklearn.datasets import load_breast_cancer
-
 cancer = load_breast_cancer()
-
 fig, axes = plt.subplots(15, 2, figsize=(10, 20))
 malignant = cancer.data[cancer.target == 0]
 benign = cancer.data[cancer.target == 1]
 ax = axes.ravel()
-
 for i in range(30):
     _, bins = np.histogram(cancer.data[:, i], bins=50)
     ax[i].hist(malignant[:, i], bins=bins, color=mglearn.cm3(0), alpha=0.5)
     ax[i].hist(benign[:, i], bins=bins, color=mglearn.cm3(2), alpha=0.5)
     ax[i].set_title(cancer.feature_names[i])
     ax[i].set_yticks(())
-
 ax[0].set_xlabel("Значение признака")
 ax[0].set_ylabel("Частота")
 ax[0].legend(["Доброкачественная", "Злокачественная"], loc="best")
@@ -31,18 +43,19 @@ fig.tight_layout()
 plt.show()
 
 from sklearn.preprocessing import StandardScaler
-
 scaler = StandardScaler()
 scaler.fit(cancer.data)
 X_scaled = scaler.transform(cancer.data)
 
 from sklearn.decomposition import PCA
-
+#оставляем первые 2 главные компоненты и подгоняем модель
 pca = PCA(n_components=2).fit(X_scaled)
+# преобразуем данные к первым 2 компонентам
 X_pca = pca.transform(X_scaled)
 print(f"""Форма исходного массива: {X_scaled.shape}
 Форма массива после сокращения размерности: {X_pca.shape}""")
 
+# строим график двуз главных компонент
 plt.figure(figsize=(8, 8))
 mglearn.discrete_scatter(X_pca[:, 0], X_pca[:, 1], cancer.target)
 plt.legend(cancer.target_names, loc="best")
@@ -51,31 +64,25 @@ plt.xlabel("Первая главная компонента")
 plt.ylabel("Вторая главная компонента")
 plt.show()
 
+
 print(f"""Форма главных компонент: {pca.components_.shape}
 Компоненты PCA:\n{pca.components_}""")
-
 plt.matshow(pca.components_, cmap="viridis")
 plt.yticks([0, 1], ["Первая компонента", "Вторая компонента"])
 plt.colorbar()
-plt.xticks(range(len(cancer.feature_names)),
-           cancer.feature_names,
-           rotation=60,
-           ha="left")
+plt.xticks(range(len(cancer.feature_names)), cancer.feature_names,rotation=60,ha="left")
 plt.xlabel("Характеристика")
 plt.ylabel("Главные компоненты")
 plt.show()
 
+#  Labeled  Faces  in  the  Wild.
+# Еще одно применение PCA, выделение признаков. Идея,заключается в
+# поиске нового представления данных,которое в отличие от исходного
+# лучше подходит для анализа.
 from sklearn.datasets import fetch_lfw_people
-
 people = fetch_lfw_people(min_faces_per_person=20, resize=0.7)
 image_shape = people.images[0].shape
-_, axes = plt.subplots(2,
-                       5,
-                       figsize=(15, 8),
-                       subplot_kw={
-                           "xticks": (),
-                           "yticks": ()
-                       })
+_, axes = plt.subplots(2, 5, figsize=(15, 8),subplot_kw={ "xticks": (),  "yticks": () })
 for target, image, ax in zip(people.target, people.images, axes.ravel()):
     ax.imshow(image)
     ax.set_title(people.target_names[target])
@@ -84,7 +91,9 @@ plt.show()
 print(f"""Форма массива изображений лиц: {people.images.shape}
 Количество классов: {people.target_names}""")
 
+# вычисляем частоту встерчаемости каждого ответа
 counts = np.bincount(people.target)
+# печатаем частоты рядом с ответом
 for i, (count, name) in enumerate(zip(counts, people.target_names)):
     print(f"{name:25} {count:3}", end=" ")
     if (i + 1) % 3 == 0:
@@ -100,14 +109,10 @@ X_people = X_people / 255.0
 
 from sklearn.neighbors import KNeighborsClassifier
 
-X_train, X_test, y_train, y_test = train_test_split(X_people,
-                                                    y_people,
-                                                    stratify=y_people,
-                                                    random_state=0)
+X_train, X_test, y_train, y_test = train_test_split(X_people, y_people,stratify=y_people,random_state=0)
 knn = KNeighborsClassifier(n_neighbors=1)
 knn.fit(X_train, y_train)
-print(
-    f"\nПривильность на тестовом наборе для 1-nn: {knn.score(X_test, y_test)}")
+print( f"\nПривильность на тестовом наборе для 1-nn: {knn.score(X_test, y_test)}")
 
 mglearn.plots.plot_pca_whitening()
 plt.show()

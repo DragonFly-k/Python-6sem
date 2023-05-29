@@ -8,7 +8,7 @@ from sklearn.datasets import load_digits
 digits = load_digits()
 X_train, X_test, y_train, y_test = train_test_split(digits.data, digits.target, random_state=0)
 from sklearn.decomposition import PCA
-#Факторизация неотрицательных матриц (NMF) и алгоритм множественного обучения (t-SHE)
+#Факторизация неотрицательных матриц (NMF)
 #алгоритм машинного обучения без учителя, который выделяет полезные характеристики.
 #Он работает так же, как PCA, и его можно использовать для уменьшения размерности.
 image_shape = digits.images[0].shape
